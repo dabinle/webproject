@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member" >
+	<select id="login" resultType="String">
+		select userName from member where userID=#{userID} and userPwd=mypack.encrypt(#{userPwd})
+	</select>
+	
+	<select id="idCheck" resultType="int">
+		select count(*) from member where userID=#{userID}
+	</select>
+	
+	<select id="idFind" resultType="String">
+		select userID from member where userName=#{userName} and email=#{email}
+	</select>
+	
+	<select id="getMemberInfo" resultType="member.MemberDTO">
+	    select userID, userName, email, mypack.decrypt(userPwd) AS userPwd, phoneNum, zipCode, address, addressDetail 
+	    from member 
+	    where userID=#{userID}
+	</select>
+	
+	<select id="check_pwd" resultType="int">
+	    select count(mypack.encrypt(#{userPwd})) from member where userID = #{userID}
+	</select>
+	
+	<insert id="join">
+		insert into member(userID, userName, userPwd, email, phoneNum, zipCode, address, addressDetail) values (#{userID}, #{userName}, mypack.encrypt(#{userPwd}), #{email}, #{phoneNum}, #{zipCode}, #{address}, #{addressDetail})
+	</insert>
+	
+	<update id="update">
+		update member set userName=#{userName}, userPwd=mypack.encrypt(#{userPwd}), phoneNum=#{phoneNum}, zipCode=#{zipCode}, address=#{address}, addressDetail=#{addressDetail} where userID=#{userID}
+	</update>
+	
+	<delete id="delete">
+		delete from member where userID=#{userID}
+	</delete>
+
+</mapper>
